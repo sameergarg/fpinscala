@@ -6,7 +6,9 @@ import fpinscala.parallelism._
 import fpinscala.parallelism.Par.Par
 import Gen._
 import Prop._
-import java.util.concurrent.{Executors,ExecutorService}
+import java.util.concurrent.{ExecutorService, Executors}
+
+import scala.util.Random
 
 /*
 The library developed in this chapter goes through several iterations. This file is just the
@@ -14,13 +16,26 @@ shell, which you can fill in and modify while working through the chapter.
 */
 
 trait Prop {
+  def check: Boolean
+  def &&(p: Prop): Prop = new Prop {
+    def check = p.check
+  }
+
 }
 
 object Prop {
   def forAll[A](gen: Gen[A])(f: A => Boolean): Prop = ???
 }
 
+case class MyGen[A](sample: State[RNG,A]) {
+
+
+}
+
+
 object Gen {
+  def choose(start: Int, stopExclusive: Int): Gen[Int] = ???
+
   def unit[A](a: => A): Gen[A] = ???
 }
 
