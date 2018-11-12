@@ -16,7 +16,7 @@ sealed trait Option[+A] {
 
   def flatMap[B](f: A => Option[B]): Option[B] = this.map(f).getOrElse(None)
 
-  def orElse[B>:A](ob: => Option[B]): Option[B] = this.flatMap(ob())
+  def orElse[B >:A](ob: => Option[B]): Option[B] = this.flatMap[B](_ => ob : Option[B])
 
   def filter(f: A => Boolean): Option[A] = this match {
     case None => None
@@ -56,7 +56,7 @@ object Option {
     case h :: t => map2(h,  sequence(t))(_ :: _)
   }
 
-  def sequence_1[A](a: List[Option[A]]): Option[List[A]] = a.foldLeft(None[List[A]])((acc, next) => next flatMap (n => acc.map(n :: _)))
+  def sequence_1[A](a: List[Option[A]]): Option[List[A]] = a.foldLeft[Option[List[A]]](None)((acc, next) => next flatMap (n => acc.map(n :: _)))
 
-  def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = a.foldLeft(None[List[A]])((bs, aa)=> map2(f(aa), bs)(_ :: _))
+  def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = a.foldLeft[Option[List[B]]](None)((bs, aa)=> map2(f(aa), bs)(_ :: _))
 }
